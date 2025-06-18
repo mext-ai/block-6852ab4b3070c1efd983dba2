@@ -19,15 +19,15 @@ const Planet: React.FC<PlanetProps> = ({ planet, onPlanetClick, showLabels, anim
   // Animation state
   useFrame((state, delta) => {
     if (orbitRef.current && planetRef.current) {
-      // Accumulate time based on animation speed
-      accumulatedTime.current += delta * animationSpeed;
+      // Accumulate time based on animation speed - increased by 10x
+      accumulatedTime.current += delta * animationSpeed * 10;
       
       // Orbital motion - use accumulated time instead of clock time
-      const orbitalAngle = (accumulatedTime.current / planet.orbitalPeriod) * 0.5; // Adjusted base speed
+      const orbitalAngle = (accumulatedTime.current / planet.orbitalPeriod) * 5; // Increased from 0.5 to 5
       orbitRef.current.rotation.y = orbitalAngle;
       
       // Planet rotation - faster rotation relative to orbit
-      const rotationAngle = (accumulatedTime.current / planet.rotationPeriod) * 5;
+      const rotationAngle = (accumulatedTime.current / planet.rotationPeriod) * 50; // Increased from 5 to 50
       planetRef.current.rotation.y = rotationAngle;
     }
   });
