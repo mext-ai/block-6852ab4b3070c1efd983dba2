@@ -14,18 +14,21 @@ interface PlanetProps {
 const Planet: React.FC<PlanetProps> = ({ planet, onPlanetClick, showLabels, animationSpeed }) => {
   const planetRef = useRef<THREE.Mesh>(null);
   const orbitRef = useRef<THREE.Group>(null);
+  const accumulatedTime = useRef(0);
   
   // Animation state
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (orbitRef.current && planetRef.current) {
-      // Orbital motion
-      const time = state.clock.getElapsedTime() * animationSpeed;
-      const angle = (time / planet.orbitalPeriod) * 0.1; // Slow down orbital speed
+      // Accumulate time based on animation speed
+      accumulatedTime.current += delta * animationSpeed;
       
-      orbitRef.current.rotation.y = angle;
+      // Orbital motion - use accumulated time instead of clock time
+      const orbitalAngle = (accumulatedTime.current / planet.orbitalPeriod) * 0.5; // Adjusted base speed
+      orbitRef.current.rotation.y = orbitalAngle;
       
-      // Planet rotation
-      planetRef.current.rotation.y = (time / planet.rotationPeriod) * 2;
+      // Planet rotation - faster rotation relative to orbit
+      const rotationAngle = (accumulatedTime.current / planet.rotationPeriod) * 5;
+      planetRef.current.rotation.y = rotationAngle;
     }
   });
 
