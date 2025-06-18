@@ -56,10 +56,8 @@ const Planet: React.FC<PlanetProps> = ({ planet, onPlanetClick, showLabels, anim
               document.body.style.cursor = 'auto';
             }}
           >
-            <meshStandardMaterial
+            <meshLambertMaterial
               color={planet.color}
-              roughness={0.8}
-              metalness={0.1}
             />
           </Sphere>
           
