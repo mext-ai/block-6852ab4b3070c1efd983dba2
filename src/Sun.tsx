@@ -12,6 +12,7 @@ interface SunProps {
 
 const Sun: React.FC<SunProps> = ({ onSunClick, showLabels, animationSpeed }) => {
   const sunRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
     if (sunRef.current) {
@@ -21,11 +22,25 @@ const Sun: React.FC<SunProps> = ({ onSunClick, showLabels, animationSpeed }) => 
       // Pulsing effect
       const scale = 1 + Math.sin(state.clock.getElapsedTime() * 2) * 0.05;
       sunRef.current.scale.setScalar(scale);
+      
+      if (glowRef.current) {
+        glowRef.current.scale.setScalar(scale * 1.1);
+      }
     }
   });
 
   return (
     <group>
+      {/* Sun glow effect - render first */}
+      <Sphere ref={glowRef} args={[sunData.radius * 1.2, 32, 32]} position={[0, 0, 0]}>
+        <meshBasicMaterial
+          color="#FFA500"
+          transparent
+          opacity={0.1}
+        />
+      </Sphere>
+      
+      {/* Main Sun */}
       <Sphere
         ref={sunRef}
         args={[sunData.radius, 32, 32]}
@@ -42,17 +57,6 @@ const Sun: React.FC<SunProps> = ({ onSunClick, showLabels, animationSpeed }) => 
       >
         <meshBasicMaterial
           color={sunData.color}
-          emissive={sunData.color}
-          emissiveIntensity={0.3}
-        />
-      </Sphere>
-      
-      {/* Sun glow effect */}
-      <Sphere args={[sunData.radius * 1.2, 32, 32]} position={[0, 0, 0]}>
-        <meshBasicMaterial
-          color={sunData.color}
-          transparent
-          opacity={0.1}
         />
       </Sphere>
       
