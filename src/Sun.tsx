@@ -13,14 +13,18 @@ interface SunProps {
 const Sun: React.FC<SunProps> = ({ onSunClick, showLabels, animationSpeed }) => {
   const sunRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const accumulatedTime = useRef(0);
   
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (sunRef.current) {
-      // Sun rotation
-      sunRef.current.rotation.y += 0.005 * animationSpeed;
+      // Accumulate time based on animation speed
+      accumulatedTime.current += delta * animationSpeed;
       
-      // Pulsing effect
-      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 2) * 0.05;
+      // Sun rotation - continuous rotation based on accumulated time
+      sunRef.current.rotation.y = accumulatedTime.current * 0.5;
+      
+      // Pulsing effect - use accumulated time for consistent pulsing
+      const scale = 1 + Math.sin(accumulatedTime.current * 2) * 0.05;
       sunRef.current.scale.setScalar(scale);
       
       if (glowRef.current) {
